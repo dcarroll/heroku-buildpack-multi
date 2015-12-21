@@ -37,14 +37,14 @@ for BUILDPACK in $(cat $1/.buildpacks); do
       fi
     fi
     cd $dir
-
+    echo "=====> Looking for branch to check out"
     if [ "$branch" != "" ]; then
       git checkout $branch >/dev/null 2>&1
     fi
 
     # we'll get errors later if these are needed and don't exist
     chmod -f +x $dir/bin/{detect,compile,release} || true
-
+    echo "=====> Detecting framework"
     framework=$($dir/bin/detect $1)
 
     if [ $? == 0 ]; then
@@ -63,6 +63,8 @@ for BUILDPACK in $(cat $1/.buildpacks); do
       if [ -x $dir/bin/release ]; then
         $dir/bin/release $1 > $1/last_pack_release.out
       fi
+    else 
+      echo "=====> Detection failed"
     fi
   fi
 done
